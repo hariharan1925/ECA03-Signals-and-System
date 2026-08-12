@@ -1,0 +1,36 @@
+clc;
+clear;
+clf;
+
+// Define Laplace variable
+s = poly(0, "s");
+
+// Transfer function
+num = 10*(s + 1);
+den = (s + 2)*(s + 5);
+H = syslin("c", num, den);
+
+// Partial fraction form
+// H(s) = 10(s+1)/[(s+2)(s+5)]
+//      = 10/3 * 1/(s+2) + 20/3 * 1/(s+5)
+
+disp("Partial Fraction Expansion:");
+disp(10/3, "Coefficient of 1/(s+2) =");
+disp(20/3, "Coefficient of 1/(s+5) =");
+
+// Impulse and step responses
+t = 0:0.01:5;
+
+imp = csim("impulse", t, H);
+stp = csim("step", t, H);
+
+// Plot
+subplot(2,1,1);
+plot(t, imp);
+xgrid();
+xtitle("Impulse Response", "Time (s)", "h(t)");
+
+subplot(2,1,2);
+plot(t, stp);
+xgrid();
+xtitle("Step Response", "Time (s)", "y(t)");
