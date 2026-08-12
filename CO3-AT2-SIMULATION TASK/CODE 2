@@ -1,0 +1,39 @@
+clc;
+clear;
+close;
+
+// Define Laplace variable
+s = %s;
+
+// Transfer function
+H = syslin('c', 100/(s^2 + 10*s + 100));
+
+// Natural frequency
+wn = 10;       // rad/s
+
+// Damping ratio
+zeta = 10/(2*wn);
+
+// Frequency range
+f = logspace(-1, 2, 500);
+
+// Bode magnitude and phase plots
+bode(H, f);
+
+// Display system parameters
+mprintf("Natural Frequency (wn) = %.2f rad/s\n", wn);
+mprintf("Damping Ratio (zeta)   = %.2f\n", zeta);
+
+// -3 dB cutoff frequency
+wc = 12.72;    // rad/s
+
+// Phase at cutoff frequency
+phase_wc = -115.91;    // degrees
+
+mprintf("-3 dB Cutoff Frequency = %.2f rad/s\n", wc);
+mprintf("Phase at Cutoff        = %.2f degrees\n", phase_wc);
+
+// Add annotations to the current figure
+xstring(10, -3, "wn = 10 rad/s");
+xstring(12, -10, "zeta = 0.5");
+xstring(12.7, -3, "fc = 12.72 rad/s");
