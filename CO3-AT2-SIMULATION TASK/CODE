@@ -1,0 +1,60 @@
+clc;
+clear;
+close;
+
+// Define Laplace variable
+s = %s;
+
+// Transfer function H(s) = 8/(s^2 + 6s + 8)
+H = syslin('c', 8/(s^2 + 6*s + 8));
+
+// Time vector
+t = 0:0.01:5;
+
+// Step response using csim()
+u = ones(1, length(t));
+y = csim(u, t, H);
+
+// Plot voltage across capacitor
+plot(t, y);
+xlabel("Time (seconds)");
+ylabel("Capacitor Voltage (V)");
+title("Step Response of RLC Series Circuit");
+xgrid();
+
+// Final value
+final_value = y($);
+
+// Maximum value
+max_value = max(y);
+
+// Percentage overshoot
+overshoot = ((max_value - final_value) / final_value) * 100;
+
+// Rise time (10% to 90%)
+y10 = 0.1 * final_value;
+y90 = 0.9 * final_value;
+
+i10 = find(y >= y10, 1);
+i90 = find(y >= y90, 1);
+
+rise_time = t(i90) - t(i10);
+
+// Settling time (2% criterion)
+upper = 1.02 * final_value;
+lower = 0.98 * final_value;
+
+idx = find((y < lower) | (y > upper));
+
+if length(idx) == 0 then
+    settling_time = 0;
+else
+    settling_time = t(idx($) + 1);
+end
+
+// Display results
+mprintf("Final Value       = %.3f V\n", final_value);
+mprintf("Maximum Value     = %.3f V\n", max_value);
+mprintf("Overshoot         = %.2f %%\n", overshoot);
+mprintf("Rise Time         = %.3f s\n", rise_time);
+mprintf("Settling Time     = %.3f s\n", settling_time);
