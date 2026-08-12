@@ -1,0 +1,32 @@
+clc;
+clear;
+clf;
+
+// Open-loop transfer function without K
+s = poly(0, 's');
+G = 1/(s*(s+2)*(s+4));
+
+// Root locus for K = 0 to 50
+evans(G, 50);
+xgrid();
+xtitle("Root Locus of G(s) = K/[s(s+2)(s+4)]", ...
+       "Real Axis", "Imaginary Axis");
+
+// Critical gain
+Kcrit = 20;
+
+// Closed-loop characteristic polynomial:
+// s^3 + 6s^2 + 8s + K = 0
+P = poly([Kcrit 8 6 1], 's', 'coeff');
+
+// Find closed-loop poles
+poles = roots(P);
+
+disp("Critical gain K = ");
+disp(Kcrit);
+
+disp("Closed-loop poles at K = 20:");
+disp(poles);
+
+// Mark critical poles
+plot(real(poles), imag(poles), 'ro');
